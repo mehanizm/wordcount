@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 	"testing"
@@ -42,7 +43,10 @@ func captureStdout() (old *os.File, reader *os.File, writer *os.File) {
 // and restores the old os.Stdout
 func restoreStdout(old *os.File, reader *os.File, writer *os.File) string {
 	writer.Close()
-	out, _ := ioutil.ReadAll(reader)
+	out, err := ioutil.ReadAll(reader)
+	if err != nil {
+		log.Fatal(err)
+	}
 	os.Stdout = old
 	return strings.TrimSuffix(string(out), "\n")
 }
